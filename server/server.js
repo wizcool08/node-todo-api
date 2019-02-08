@@ -9,7 +9,7 @@ var { User } = require("./models/user");
 
 var app = express();
 //bodyParser takes the json and convert into an object
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 // Create Todo using POST http request
 app.post("/todos", (req, res) => {
   var todo = new Todo({
