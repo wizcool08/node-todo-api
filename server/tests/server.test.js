@@ -116,3 +116,48 @@ describe("GET /todos/:id", () => {
       .end(done);
   });
 });
+
+
+//  i) Test the Delete request is working + verify if the record has been deleted
+describe.only("DELETE /todos/:id", () => {
+  it("should remove todo doc by ID", done => {
+    var id = todos[1]._id.toHexString();
+    request(app)
+      .delete(`/todos/${id}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo._id).toBe(id);
+        expect(res.body.todo.text).toBe(todos[1].text);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        // query DB using findByID toNotExist
+        // expect(null).toNotExist();
+        Todo.findById(id)
+          .then(todo => {
+            expect(todo).toNotExist();
+            done();
+          })
+          .catch(err => done(err));
+      });
+  });
+
+  it("should return 404 if todo not found in collection", done => {
+    var IdNotFound = new ObjectID();
+    request(app)
+      .delete(`/todo/${IdNotFound.toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it("should return 404 for non-object ids", done => {
+    var invalidObjID = "abc123";
+    request(app)
+      .delete(`/todos/${invalidObjID}`)
+      .expect(404)
+      .end(done);
+  });
+});
