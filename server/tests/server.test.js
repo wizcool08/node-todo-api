@@ -117,9 +117,8 @@ describe("GET /todos/:id", () => {
   });
 });
 
-
 //  i) Test the Delete request is working + verify if the record has been deleted
-describe.only("DELETE /todos/:id", () => {
+describe("DELETE /todos/:id", () => {
   it("should remove todo doc by ID", done => {
     var id = todos[1]._id.toHexString();
     request(app)
@@ -159,5 +158,45 @@ describe.only("DELETE /todos/:id", () => {
       .delete(`/todos/${invalidObjID}`)
       .expect(404)
       .end(done);
+  });
+});
+
+describe.only("PATCH /todos/:id", () => {
+  it("should update todo doc by ID", done => {
+    // get the id of first item
+    // update text, and set completed true
+    // return 200
+    // text is changed, completed is true, completedAt is a number .toBeA
+    var id = todos[0]._id.toHexString();
+    var text = "Test completed YAY";
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({ text, completed: true })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.text).toBe(text);
+        expect(res.body.todo.completed).toBe(true);
+        expect(res.body.todo.completed_at).toBeA("number");
+      })
+      .end(done);
+  });
+
+  it("should clear completedAt when todo is not completed", done => {
+    // grab id of second toDo item
+    let hexId = todos[1]._id.toHexString();
+    var text = "This should be the new text!!!";
+    // update text, set completed to false
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .send({ text, completed: false })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.text).toBe(text);
+        expect(res.body.todo.completed).toBe(false);
+        expect(res.body.todo.completed_at).toNotExist();
+      })
+      .end(done);
+    // text is changed, completed false, completedAt is null .toNotExist
   });
 });

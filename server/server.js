@@ -87,9 +87,8 @@ app.delete("/todos/:id", (req, res) => {
 
 app.patch("/todos/:id", (req, res) => {
   var id = req.params.id;
+  //the text and completed field is only what user can update.
   var body = _.pick(req.body, ["text", "completed"]);
-
-  console.log(body);
   // validate the id => not valid? return 404
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
@@ -102,12 +101,21 @@ app.patch("/todos/:id", (req, res) => {
     body.completedAt = null;
   }
 
-  Todo.findByIdAndUpdate(id, { $set: body }, { new: true })
+  Todo.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        text: body.text,
+        completed_at: body.completedAt,
+        completed: body.completed
+      }
+    },
+    { new: true }
+  )
     .then(todo => {
       if (!todo) {
         return res.status(404).send();
       }
-
       res.send({ todo });
     })
     .catch(e => {
