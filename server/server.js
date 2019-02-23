@@ -1,3 +1,5 @@
+require("./config/config");
+
 const _ = require("lodash");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -10,7 +12,7 @@ var { User } = require("./models/user");
 //This file is just responsible for routes
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 //bodyParser takes the json and convert into an object
 app.use(bodyParser.json());
 // Create Todo using POST http request

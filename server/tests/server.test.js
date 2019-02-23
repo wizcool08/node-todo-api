@@ -161,7 +161,7 @@ describe("DELETE /todos/:id", () => {
   });
 });
 
-describe.only("PATCH /todos/:id", () => {
+describe("PATCH /todos/:id", () => {
   it("should update todo doc by ID", done => {
     // get the id of first item
     // update text, and set completed true
