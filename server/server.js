@@ -9,7 +9,7 @@ var { mongoose } = require("./db/mongoose");
 var { Todo } = require("./models/todo");
 var { User } = require("./models/user");
 
-//This file is just responsible for routes
+//This file is responsible for the routes
 
 var app = express();
 const port = process.env.PORT;
