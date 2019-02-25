@@ -15,7 +15,8 @@ var app = express();
 const port = process.env.PORT;
 //bodyParser takes the json and convert into an object
 app.use(bodyParser.json());
-// Create Todo using POST http request
+
+// POST /todos/
 app.post("/todos", (req, res) => {
   var todo = new Todo({
     text: req.body.text
@@ -123,6 +124,21 @@ app.patch("/todos/:id", (req, res) => {
     .catch(e => {
       res.status(400).send();
     });
+});
+
+// POST /users
+app.post("/users", (req, res) => {
+  var body = _.pick(req.body, ["email", "password"]);
+  var user = new User(body);
+
+  user.save().then(
+    docs => {
+      res.status(201).send(docs);
+    },
+    err => {
+      res.status(400).send(err);
+    }
+  );
 });
 
 app.listen(port, () => {
